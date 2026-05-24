@@ -5,8 +5,8 @@ MODULO 3 ARQUITECTURA DEL BACK END Y BASE DE DATOS
 INTEGRANTES
 - Antonio Benito José Manuel (Josemaanto)
 - Carpio Vasquez Joel Dery (joedery17)
-- Choquecallata Villca Federico, (federico-fck)
-- Valverde Huarachi Rodrigo Cristian,
+- Choquecallata Villca Federico (federico-fck)
+- Valverde Huarachi Rodrigo Cristian (Rodrigo272002),
 
 # IMPORTANTE
 Una vez clonado el proyecto, COPIAR el archivo .env y pegarlo en la carpeta BACKEND.
