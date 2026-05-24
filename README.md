@@ -1,4 +1,5 @@
 # Sistema de Gestión de Encomiendas
+# Trabajo completo
 MODULO 3 ARQUITECTURA DEL BACK END Y BASE DE DATOS
 # Grupo 3
 INTEGRANTES
@@ -17,6 +18,7 @@ Luego ya podemos ingresar a la pagina mediante los puertos:
 - http://localhost:3000/api/docs
 - Frontend
 - http://localhost:4200
+Para cerrar todo el docker se usa el comando "docker compose down"
 
 # Videos del trabajo realizado en el trancurso del desarrollo del proyecto del modulo 2
 
