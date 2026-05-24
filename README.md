@@ -6,7 +6,7 @@ INTEGRANTES
 - Antonio Benito José Manuel (Josemaanto)
 - Carpio Vasquez Joel Dery (joedery17)
 - Choquecallata Villca Federico (federico-fck)
-- Valverde Huarachi Rodrigo Cristian (Rodrigo272002),
+- Valverde Huarachi Rodrigo Cristian (Rodrigo272002)
 
 # IMPORTANTE
 Una vez clonado el proyecto, COPIAR el archivo .env y pegarlo en la carpeta BACKEND.
@@ -63,4 +63,4 @@ Frontend → Nginx → Backend API → PostgreSQL
 
 Clonar repositorio:
 bash
-- git clone URL_DEL_REPOSITORIO
+- git clone https://github.com/joedery17/Sistema-de-encomiendas-dockerizado.git
