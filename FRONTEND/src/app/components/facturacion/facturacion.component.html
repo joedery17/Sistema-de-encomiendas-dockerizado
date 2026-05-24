@@ -1,0 +1,141 @@
+<div class="facturacion-layout">
+  <app-sidebar></app-sidebar>
+  
+  <main class="facturacion-main">
+    <div class="facturacion-contenedor">
+      
+      <div class="cabecera">
+        <div>
+          <h1 class="titulo-pagina">📄 Facturación</h1>
+          <p class="subtitulo">Gestión de facturas electrónicas</p>
+        </div>
+        <div class="resumen-facturas">
+          <div class="resumen-item">
+            <span class="resumen-label">Total Facturas</span>
+            <span class="resumen-valor">{{ facturas().length }}</span>
+          </div>
+          <div class="resumen-item">
+            <span class="resumen-label">Total Monto</span>
+            <span class="resumen-valor monto-total">Bs. {{ getTotalMonto() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="barra-busqueda">
+        <svg class="buscar-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input 
+          type="text" 
+          class="buscar-input" 
+          placeholder="Buscar por N° Factura, NIT o Razón Social..."
+          [(ngModel)]="terminoBusqueda"
+          (input)="filtrarFacturas()"
+        />
+      </div>
+
+      @if (cargando()) {
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="tarjeta-tabla">
+          <div class="tabla-responsive">
+            <table class="tabla-facturas">
+              <thead>
+                <tr>
+                  <th>N° Factura</th>
+                  <th>Fecha</th>
+                  <th>NIT</th>
+                  <th>Razón Social</th>
+                  <th>Monto</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (factura of facturas(); track factura.id) {
+                  <tr>
+                    <td class="numero-factura">{{ factura.numero }}</td>
+                    <td class="fecha-factura">{{ factura.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td class="nit-factura">{{ factura.nit }}</td>
+                    <td class="cliente-factura">{{ factura.razonSocial }}</td>
+                    <td class="monto-factura">Bs. {{ factura.monto }}</td>
+                    <td class="acciones">
+                      <button class="btn-ver" (click)="verDetalle(factura)">
+                        <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        Ver
+                      </button>
+                      <button class="btn-imprimir" (click)="imprimirFactura(factura)">
+                        <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                        Imprimir
+                      </button>
+                    </td>
+                  </tr>
+                }
+                @empty {
+                  <tr class="fila-vacia">
+                    <td colspan="6" class="text-center">
+                      <div class="vacio">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p>No hay facturas registradas</p>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Modal Detalle Factura -->
+  @if (modalAbierto() && facturaSeleccionada()) {
+    <div class="modal-overlay" (click)="cerrarModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>📄 Detalle de Factura</h2>
+          <button class="modal-close" (click)="cerrarModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="detalle-factura">
+            <div class="detalle-grupo">
+              <label>N° Factura</label>
+              <span>{{ facturaSeleccionada().numero }}</span>
+            </div>
+            <div class="detalle-grupo">
+              <label>Fecha</label>
+              <span>{{ facturaSeleccionada().fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="detalle-grupo">
+              <label>NIT</label>
+              <span>{{ facturaSeleccionada().nit }}</span>
+            </div>
+            <div class="detalle-grupo">
+              <label>Razón Social</label>
+              <span class="razon">{{ facturaSeleccionada().razonSocial }}</span>
+            </div>
+            <div class="detalle-grupo total">
+              <label>Monto Total</label>
+              <span class="monto-grande">Bs. {{ facturaSeleccionada().monto }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="cerrarModal()">Cerrar</button>
+          <button class="btn-primary" (click)="imprimirFactura(facturaSeleccionada())">
+            🖨️ Imprimir Factura
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,155 @@
+<div class="encomiendas-layout">
+  <app-sidebar></app-sidebar>
+  
+  <main class="encomiendas-main">
+    <div class="encomiendas-contenedor">
+      
+      <div class="cabecera">
+        <h1 class="titulo-pagina">📦 Encomiendas</h1>
+        <button class="btn-primary" (click)="abrirModal()">
+          <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Nueva Encomienda
+        </button>
+      </div>
+
+      <div class="barra-busqueda">
+        <svg class="buscar-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input 
+          type="text" 
+          class="buscar-input" 
+          placeholder="Buscar por código o descripción..."
+          [(ngModel)]="terminoBusqueda"
+          (input)="filtrarEncomiendas()"
+        />
+      </div>
+
+      @if (cargando()) {
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="tarjeta-tabla">
+          <div class="tabla-responsive">
+            <table class="tabla-encomiendas">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Código</th>
+                  <th>Remitente</th>
+                  <th>Destinatario</th>
+                  <th>Descripción</th>
+                  <th>Peso (kg)</th>
+                  <th>Valor (Bs)</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (encomienda of encomiendasFiltradas(); track encomienda.id) {
+                  <tr>
+                    <td class="id-encomienda">{{ encomienda.id }}</td>
+                    <td class="codigo-encomienda">{{ encomienda.codigo }}</td>
+                    <td>{{ obtenerNombreCliente(encomienda.remitente_id) }}</td>
+                    <td>{{ obtenerNombreCliente(encomienda.destinatario_id) }}</td>
+                    <td>{{ encomienda.descripcion || '-' }}</td>
+                    <td class="peso">{{ encomienda.peso || '-' }}</td>
+                    <td class="valor">Bs. {{ encomienda.valor_declarado || '-' }}</td>
+                    <td class="acciones">
+                      <button class="btn-editar" (click)="abrirModal(encomienda)">
+                        <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Editar
+                      </button>
+                      <button class="btn-eliminar" (click)="eliminarEncomienda(encomienda.id)">
+                        <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Eliminar
+                      </button>
+                    </td>
+                   </tr>
+                }
+                @empty {
+                  <tr class="fila-vacia">
+                    <td colspan="8" class="text-center">
+                      <div class="vacio">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        <p>No hay encomiendas registradas</p>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Modal -->
+  @if (modalAbierto()) {
+    <div class="modal-overlay" (click)="cerrarModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ encomiendaEditando() ? '✏️ Editar Encomienda' : '➕ Nueva Encomienda' }}</h2>
+          <button class="modal-close" (click)="cerrarModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Código</label>
+            <input type="text" class="input-field" [(ngModel)]="formulario.codigo" readonly />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Remitente *</label>
+              <select class="input-field" [(ngModel)]="formulario.remitente_id" required>
+                <option [value]="0">Seleccionar remitente</option>
+                @for (cliente of clientes(); track cliente.id) {
+                  <option [value]="cliente.id">{{ cliente.nombre }} {{ cliente.apellido }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Destinatario *</label>
+              <select class="input-field" [(ngModel)]="formulario.destinatario_id" required>
+                <option [value]="0">Seleccionar destinatario</option>
+                @for (cliente of clientes(); track cliente.id) {
+                  <option [value]="cliente.id">{{ cliente.nombre }} {{ cliente.apellido }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea class="input-field" rows="2" [(ngModel)]="formulario.descripcion"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Peso (kg)</label>
+              <input type="number" step="0.01" class="input-field" [(ngModel)]="formulario.peso" />
+            </div>
+            <div class="form-group">
+              <label>Volumen (m³)</label>
+              <input type="number" step="0.01" class="input-field" [(ngModel)]="formulario.volumen" />
+            </div>
+            <div class="form-group">
+              <label>Valor Declarado (Bs)</label>
+              <input type="number" step="0.01" class="input-field" [(ngModel)]="formulario.valor_declarado" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button class="btn-primary" (click)="guardarEncomienda()">Guardar Encomienda</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

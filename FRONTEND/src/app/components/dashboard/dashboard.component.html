@@ -1,0 +1,106 @@
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
+  
+  <main class="dashboard-main">
+    <div class="dashboard-contenedor">
+      <h1 class="titulo-pagina">Dashboard</h1>
+      
+      @if (cargando()) {
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="estadisticas-grid">
+          <div class="tarjeta-estadistica">
+            <div class="estadistica-info">
+              <p class="estadistica-label">Total Clientes</p>
+              <p class="estadistica-valor">{{ estadisticas().clientes }}</p>
+            </div>
+            <div class="estadistica-icono bg-azul">
+              <svg class="icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="tarjeta-estadistica">
+            <div class="estadistica-info">
+              <p class="estadistica-label">Total Encomiendas</p>
+              <p class="estadistica-valor">{{ estadisticas().encomiendas }}</p>
+            </div>
+            <div class="estadistica-icono bg-verde">
+              <svg class="icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="tarjeta-estadistica">
+            <div class="estadistica-info">
+              <p class="estadistica-label">Total Envíos</p>
+              <p class="estadistica-valor">{{ estadisticas().envios }}</p>
+            </div>
+            <div class="estadistica-icono bg-naranja">
+              <svg class="icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="tarjeta-estadistica">
+            <div class="estadistica-info">
+              <p class="estadistica-label">Sucursales</p>
+              <p class="estadistica-valor">{{ estadisticas().sucursales }}</p>
+            </div>
+            <div class="estadistica-icono bg-morado">
+              <svg class="icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="tarjeta-recientes">
+          <div class="tarjeta-header">
+            <h2>Envíos Recientes</h2>
+          </div>
+          <div class="tabla-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Código</th>
+                  <th>Origen</th>
+                  <th>Destino</th>
+                  <th>Estado</th>
+                  <th>Costo</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (envio of enviosRecientes(); track envio.id) {
+                  <tr>
+                    <td>{{ envio.id }}</td>
+                    <td class="fuente-media">{{ obtenerCodigoEncomienda(envio.encomiendaId) }}</td>
+                    <td>{{ obtenerNombreSucursal(envio.sucursalOrigenId) }}</td>
+                    <td>{{ obtenerNombreSucursal(envio.sucursalDestinoId) }}</td>
+                    <td>
+                      <span class="status-badge {{ obtenerClaseEstado(envio.estadoId) }}">
+                        {{ obtenerNombreEstado(envio.estadoId) }}
+                      </span>
+                    </td>
+                    <td>Bs. {{ envio.costo }}</td>
+                  </tr>
+                }
+                @empty {
+                  <tr>
+                    <td colspan="6" class="text-center">No hay envíos registrados</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+</div>

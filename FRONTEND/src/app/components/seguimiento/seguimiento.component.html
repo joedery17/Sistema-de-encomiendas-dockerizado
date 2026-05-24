@@ -1,0 +1,169 @@
+<div class="seguimiento-layout">
+  <app-sidebar></app-sidebar>
+  
+  <main class="seguimiento-main">
+    <div class="seguimiento-contenedor">
+      
+      <div class="cabecera">
+        <div>
+          <h1 class="titulo-pagina">📍 Seguimiento de Envíos</h1>
+          <p class="subtitulo">Historial de seguimiento de envíos</p>
+        </div>
+        <button class="btn-primary" (click)="abrirModal()">
+          <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Nuevo Seguimiento
+        </button>
+      </div>
+
+      <div class="filtro-bar">
+        <label>Filtrar por Envío:</label>
+        <select class="input-field" (change)="onEnvioChange($event)">
+          <option [value]="">Todos los envíos</option>
+          @for (envio of envios(); track envio.id) {
+            <option [value]="envio.id">Envío #{{ envio.id }}</option>
+          }
+        </select>
+      </div>
+
+      @if (cargando()) {
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="timeline-contenedor">
+          @for (seguimiento of seguimientosFiltrados(); track seguimiento.id) {
+            <div class="timeline-item">
+              <div class="timeline-marcador"></div>
+              <div class="timeline-contenido">
+                <div class="timeline-header">
+                  <div class="timeline-info">
+                    <span class="timeline-estado status-badge {{ obtenerClaseEstado(seguimiento.estadoId) }}">
+                      {{ obtenerNombreEstado(seguimiento.estadoId) }}
+                    </span>
+                    <span class="timeline-fecha">{{ seguimiento.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                  <div class="timeline-acciones">
+                    <button class="btn-editar" (click)="abrirModalEditar(seguimiento)">
+                      <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                      Editar
+                    </button>
+                    <button class="btn-eliminar" (click)="eliminarSeguimiento(seguimiento.id)">
+                      <svg class="btn-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+                <div class="timeline-cuerpo">
+                  <p><strong>Envío:</strong> {{ obtenerCodigoEnvio(seguimiento.envioId) }}</p>
+                  @if (seguimiento.ubicacion) {
+                    <p><strong>Ubicación:</strong> {{ seguimiento.ubicacion }}</p>
+                  }
+                  @if (seguimiento.observaciones) {
+                    <p><strong>Observaciones:</strong> {{ seguimiento.observaciones }}</p>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+          @if (seguimientosFiltrados().length === 0) {
+            <div class="estado-vacio">
+              <p>No hay registros de seguimiento para mostrar</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Modal Nuevo Seguimiento -->
+  @if (modalAbierto()) {
+    <div class="modal-overlay" (click)="cerrarModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header-seguimiento">
+          <h3>📍 Nuevo Seguimiento</h3>
+          <button class="modal-close" (click)="cerrarModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Envío *</label>
+            <select class="input-field" [(ngModel)]="formulario.envio_id" required>
+              <option [value]="0">Seleccionar envío</option>
+              @for (envio of envios(); track envio.id) {
+                <option [value]="envio.id">Envío #{{ envio.id }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estado *</label>
+            <select class="input-field" [(ngModel)]="formulario.estado_id" required>
+              @for (estado of estados; track estado.id) {
+                <option [value]="estado.id">{{ estado.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ubicación</label>
+            <input type="text" class="input-field" [(ngModel)]="formulario.ubicacion" placeholder="Ej: La Paz, Santa Cruz..." />
+          </div>
+          <div class="form-group">
+            <label>Observaciones</label>
+            <textarea class="input-field" rows="3" [(ngModel)]="formulario.observaciones" placeholder="Detalles adicionales..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button class="btn-primary" (click)="guardarSeguimiento()">Guardar Seguimiento</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Editar Seguimiento -->
+  @if (modalEditarAbierto()) {
+    <div class="modal-overlay" (click)="cerrarModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header-seguimiento">
+          <h3>✏️ Editar Seguimiento</h3>
+          <button class="modal-close" (click)="cerrarModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Envío *</label>
+            <select class="input-field" [(ngModel)]="formulario.envio_id" required>
+              <option [value]="0">Seleccionar envío</option>
+              @for (envio of envios(); track envio.id) {
+                <option [value]="envio.id">Envío #{{ envio.id }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estado *</label>
+            <select class="input-field" [(ngModel)]="formulario.estado_id" required>
+              @for (estado of estados; track estado.id) {
+                <option [value]="estado.id">{{ estado.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ubicación</label>
+            <input type="text" class="input-field" [(ngModel)]="formulario.ubicacion" />
+          </div>
+          <div class="form-group">
+            <label>Observaciones</label>
+            <textarea class="input-field" rows="3" [(ngModel)]="formulario.observaciones"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button class="btn-primary" (click)="actualizarSeguimiento()">Actualizar Seguimiento</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
