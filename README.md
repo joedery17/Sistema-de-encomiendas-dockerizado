@@ -1,7 +1,11 @@
 # Sistema de Gestión de Encomiendas
+
 # Trabajo completo
-MODULO 3 ARQUITECTURA DEL BACK END Y BASE DE DATOS
+
+MODULO 3 INTEGRACION DE SISTEMAS Y METODOLOGIAS PROFESIONALES
+
 # Grupo 3
+
 INTEGRANTES
 - Antonio Benito José Manuel (Josemaanto)
 - Carpio Vasquez Joel Dery (joedery17)
