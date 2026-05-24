@@ -7,6 +7,17 @@ INTEGRANTES
 - Choquecallata Villca Federico,
 - Valverde Huarachi Rodrigo Cristian,
 
+#IMPORTANTE
+Una vez clonado el proyecto, COPIAR el archivo .env y pegarlo en la carpeta BACKEND.
+
+#EJECUCIÓN
+Con la aplicación docker desktop abierta utilizamos el comando "docker compose up --build" dentro de la carpeta del proyecto.
+Luego ya podemos ingresar a la pagina mediante los puertos:
+API/SWAGGER
+http://localhost:3000/api/docs
+Frontend
+http://localhost:4200
+
 # Videos del trabajo realizado en el trancurso del desarrollo del proyecto del modulo 2
 
 ## Descripción
