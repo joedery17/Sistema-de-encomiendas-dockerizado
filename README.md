@@ -26,6 +26,8 @@ Para cerrar todo el docker se usa el comando "docker compose down"
 
 # Videos del trabajo realizado en el trancurso del desarrollo del proyecto del modulo 3
 
+https://youtu.be/0RdFdmmrg9s
+
 ## Descripción
 
 Aplicación web full stack dockerizada para gestión de encomiendas.
