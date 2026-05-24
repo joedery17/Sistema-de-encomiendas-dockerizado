@@ -2,10 +2,10 @@
 MODULO 3 ARQUITECTURA DEL BACK END Y BASE DE DATOS
 # Grupo 3
 INTEGRANTES
-Antonio Benito José Manuel,
-Carpio Vasquez Joel Dery,
-Choquecallata Villca Federico,
-Valverde Huarachi Rodrigo Cristian,
+- Antonio Benito José Manuel,
+- Carpio Vasquez Joel Dery,
+- Choquecallata Villca Federico,
+- Valverde Huarachi Rodrigo Cristian,
 
 # Videos del trabajo realizado en el trancurso del desarrollo del proyecto del modulo 2
 
