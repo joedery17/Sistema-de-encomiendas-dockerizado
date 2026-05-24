@@ -20,7 +20,7 @@ Luego ya podemos ingresar a la pagina mediante los puertos:
 - http://localhost:4200
 Para cerrar todo el docker se usa el comando "docker compose down"
 
-# Videos del trabajo realizado en el trancurso del desarrollo del proyecto del modulo 2
+# Videos del trabajo realizado en el trancurso del desarrollo del proyecto del modulo 3
 
 ## Descripción
 
