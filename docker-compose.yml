@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: database
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./BACKEND/database.sql:/docker-entrypoint-initdb.d/database.sql
+
+  backend:
+    build: ./BACKEND
+    container_name: backend_app
+    restart: always
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - ./BACKEND/.env
+
+    depends_on:
+      - db
+
+  frontend:
+    build: ./FRONTEND
+    container_name: frontend_app
+    restart: always
+
+    ports:
+      - "4200:80"
+
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
